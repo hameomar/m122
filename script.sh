@@ -56,19 +56,10 @@ installation_22.04 () {
 
 apt-get update  # To get the latest package lists
 apt install apache2 mariadb-server -y
+apt-cache search php7.4
+add-apt-repository ppa:ondrej/php --yes &> /dev/null
 apt install php7.4 libapache2-mod-php7.4 php7.4-{mysql,intl,curl,json,gd,xml,mbstring,zip} -y
 apt install curl gnupg2 -y
-apt-cache policy php
-add-apt-repository ppa:ondrej/php --yes &> /dev/null
-sudo add-apt-repository ppa:ondrej/php
-apt update
-apt install php7.4
-php7.4 -m
-apt-cache search php7.4-mysql
-apt install php7.4-mysql
-apt install php-pear
-apt install mariadb-server
-apt install php7.4 libapache2-mod-php7.4 php7.4-{mysql,intl,curl,json,gd,xml,mbstring,zip} -y
 echo 'deb http://download.opensuse.org/repositories/isv:/ownCloud:/server:/10.9.1/Ubuntu_22.04/ /' > /etc/apt/sources.list.d/isv:ownCloud:server:10.list
 curl -fsSL https://download.opensuse.org/repositories/isv:ownCloud:server:10/Ubuntu_20.04/Release.key | gpg --dearmor > /etc/apt/trusted.gpg.d/isv_ownCloud_server_10.gpg
 apt update
@@ -107,6 +98,7 @@ sudo -u www-data php occ maintenance:install \
    --admin-user "root" \
    --admin-pass "1234-XYZ"
 
+firefox --new-window http://localhost
 #LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
 
 }
