@@ -97,8 +97,6 @@ sudo -u www-data php occ maintenance:install \
    --database-pass "1234-XYZ" \
    --admin-user "root" \
    --admin-pass "1234-XYZ"
-
-firefox --new-window http://localhost
 #LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
 
 }
