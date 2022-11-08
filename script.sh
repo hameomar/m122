@@ -50,10 +50,9 @@ lsb_release -a
 }
 
 installation_22.04 () {
-    echo "install"
+    echo "Die Installation ist begonnen..."
 #LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
 
-sudo su
 apt-get update  # To get the latest package lists
 apt install apache2 mariadb-server -y
 apt-cache search php7.4
@@ -100,11 +99,11 @@ sudo -u www-data php occ maintenance:install \
 #LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
 
 BIGreen='\033[1;92m'
-echo  "${BIGreen} * OWNCLOUD WURDE ERFOLGREICH INSTALLIERT "
-echo  "${BIGreen} * Um sich anzumelden, besuchen Sie http://loaclhost"
-echo  "${BIGreen} * Das PW:1234-XYZ"
-echo  "${BIGreen} * und der User : root "
-echo  "${BIGreen} * Für Sicherheitsgrunden ändern Sie bitte Ihr PW und deaktivieren Sie den Benutzer root "
+printf  "${BIGreen} * OWNCLOUD WURDE ERFOLGREICH INSTALLIERT "
+printf  "${BIGreen} * Um sich anzumelden, besuchen Sie http://loaclhost"
+printf  "${BIGreen} * Das PW:1234-XYZ"
+printf  "${BIGreen} * und der User : root "
+printf  "${BIGreen} * Für Sicherheitsgrunden ändern Sie bitte Ihr PW und deaktivieren Sie den Benutzer root "
 
 }
 
