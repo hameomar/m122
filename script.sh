@@ -53,7 +53,7 @@ installation_22.04 () {
     echo "install"
 #LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
 
-
+sudo su
 apt-get update  # To get the latest package lists
 apt install apache2 mariadb-server -y
 apt-cache search php7.4
