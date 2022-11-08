@@ -98,7 +98,10 @@ sudo -u www-data php occ maintenance:install \
    --admin-user "root" \
    --admin-pass "1234-XYZ"
 #LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
-
+echo "OWNCLOUD WURDE ERFOLGREICH INSTALLIERT"
+echo "Um sich anzumelden, besuchen Sie http://loaclhost"
+echo "Das PW:1234-XYZ und der User : root "
+echo "Für Sicherheitsgrunden ändern Sie bitte Ihr PW und deaktivieren Sie den Benutzer root"
 }
 
 installation_other () {
