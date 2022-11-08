@@ -106,7 +106,6 @@ echo  "${BIGreen} * Um sich anzumelden, besuchen Sie http://loaclhost"
 echo  "${BIGreen} * Das PW:1234-XYZ"
 echo  "${BIGreen} * und der User : root "
 echo  "${BIGreen} * Für Sicherheitsgrunden ändern Sie bitte Ihr PW und deaktivieren Sie den Benutzer root "
-reset
 
 }
 
@@ -136,6 +135,13 @@ while true; do
             1) break 2 ;;
             2) break ;;
             *) echo "Look, it's a simple question...enter 1 or 2" >&2
+            reset
+BIGreen='\033[1;92m'
+echo  "${BIGreen} * OWNCLOUD WURDE ERFOLGREICH INSTALLIERT "
+echo  "${BIGreen} * Um sich anzumelden, besuchen Sie http://loaclhost"
+echo  "${BIGreen} * Das PW:1234-XYZ"
+echo  "${BIGreen} * und der User : root "
+echo  "${BIGreen} * Für Sicherheitsgrunden ändern Sie bitte Ihr PW und deaktivieren Sie den Benutzer root "
         esac
     done
 done
