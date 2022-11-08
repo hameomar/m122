@@ -98,7 +98,7 @@ sudo -u www-data php occ maintenance:install \
    --admin-user "root" \
    --admin-pass "1234-XYZ"
 #LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
-sudo hostname owncloud.tbz
+
 }
 
 installation_other () {
