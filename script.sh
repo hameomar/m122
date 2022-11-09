@@ -97,7 +97,7 @@ sudo -u www-data php occ maintenance:install \
    --admin-user "root" \
    --admin-pass "1234-XYZ"
 #LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
-
+reset
 BIGreen='\033[1;92m'
 printf  "${BIGreen} * OWNCLOUD WURDE ERFOLGREICH INSTALLIERT "
 printf  "${BIGreen} * Um sich anzumelden, besuchen Sie http://loaclhost"
