@@ -100,7 +100,7 @@ sudo -u www-data php occ maintenance:install \
 reset
 BIGreen='\033[1;92m'
 printf  "${BIGreen} * OWNCLOUD WURDE ERFOLGREICH INSTALLIERT "
-printf  "${BIGreen} * Um sich anzumelden, besuchen Sie http://loaclhost"
+printf  "${BIGreen} * Um sich anzumelden, besuchen Sie http://localhost"
 printf  "${BIGreen} * Das PW:1234-XYZ"
 printf  "${BIGreen} * und der User : root "
 printf  "${BIGreen} * Für Sicherheitsgrunden ändern Sie bitte Ihr PW und deaktivieren Sie den Benutzer root "
