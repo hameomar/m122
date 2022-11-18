@@ -1,4 +1,11 @@
 #!/bin/bash
+echo ' Privacy: This bash script will install on your server OwnCloud server and necessary software as well as MariaDB and Apache2. The Apache web server configuration will be adjusted. Remember, if you have important data on the server, please make a backup first. Do you accept this? '
+    select yn in "Yes" "No" ;do
+       case $yn in
+            Yes) break;;
+            No) exit;;
+       esac
+        done
 
 showMe(){
 
