@@ -218,7 +218,7 @@ sudo -u www-data php occ maintenance:install \
    --database-pass "1234-XYZ" \
    --admin-user "root" \
    --admin-pass "1234-XYZ"
-#Grüne Meldung anzeigen
+#Grüne Meldung anzeigen, dass es installiert wurde.
 reset
 BIGreen='\033[1;92m'
 printf  "${BIGreen} * OWNCLOUD WAS INSTALLED SUCCESSFULLY "
@@ -235,17 +235,19 @@ installation_other () {
     echo "install"
 apt update
 }
-
+#hier startet die Installation von einem Self Signed Zertifikate SSL. 
 installation_ssl () {
     echo "SSL installation started"
-#backup ssl folder
+#backup ssl Ordner, damit wir es später wiederherstellen können.
 DIR="/etc/sll/"
 if [ -d "$DIR" ]; then
   # Take action if $DIR exists. #
   echo "ssl exist, i will backup your config ${DIR}..."
   cp -r /etc/ssl /etc/ssl.back
-fi	
+fi
+#Mit OpenSll Befehl kann man unter Linux Systeme eine Zertifikate generieren und installieren. Der User muss seinen Frima Name und Informationen eingeben.
 sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/apache.key -out /etc/ssl/certs/apache.crt |& tee ~/OwnCloud-Installation-Logs/ssl-logs.txt
+#Jetzt muss ich Apache Konfig Informeirt, dass die Website eine SSL Zertifikate hat. Daher wird Port 443 benutzt. Die Pfad von .Key und .Crt Zertifikate mussen richtig sein.
 cat > /etc/apache2/sites-available/default-ssl.conf << 'EOL'
 <IfModule mod_ssl.c>
 	<VirtualHost _default_:443>
@@ -268,26 +270,38 @@ cat > /etc/apache2/sites-available/default-ssl.conf << 'EOL'
 	</VirtualHost>
 </IfModule>
 EOL
-
+#Jetzt muss ich die SSL Konfiguration Mode aktivieren
 sudo a2enmod ssl |& tee ~/OwnCloud-Installation-Logs/enable-ssl-mode-logs.txt
+#Mit diesem Befehl werde ich die SSL für die Seite aktivieren
 sudo a2ensite default-ssl.conf |& tee ~/OwnCloud-Installation-Logs/enable-ssl-site-logs.txt
+#Danach muss ich Apache neustarten
 sudo systemctl restart apache2 |& tee ~/OwnCloud-Installation-Logs/reload-apache-afterssl-logs.txt
 }
-
+#hier startet das Backup Prozess
 recovery () {
     echo "recovery proccess is running"
+#Zuerst mussen alle Dienste mit der Arbeit aufhören. Mysql und Apache, MariaDB. Für Php kann man nicht
 sudo service apache2 stop ; sudo service mysql stop ; sudo service mariadb stop	
+#Ich wiederherstelle Apache Konfig
 rm -r /etc/apache2 ; cp -r /etc/apache2.back /etc/apache2
+#Wiederherstellen vom Mysql Konfiguration
 rm -r /etc/mysql ; cp -r /etc/mysql.back /etc/mysql
+#Wiederherstellen vom Php Konfig
 rm -r /etc/php ; cp -r /etc/php.back /etc/php
+#Wiederherstellen vom SSL Konfiguration
 rm -r /etc/ssl/ ; cp -r /etc/ssl.back /etc/ssl
+# Das Löschen vom OwnCloud Seite
 rm -r /var/www/owncloud
+# Das Löschen von Curl und DownLoad Tools
 sudo apt purge curl gnupg2 -y
+#Mega Tools löschen
 sudo apt purge megatools -y
+#Am Schluss muss ich das Repo wiederherstellen und updaten
 rm -r /etc/apt/ ; cp -r /etc/apt.back /etc/apt ; apt update -y
 
 }
-
+# Hier ist meine Haupt Schleif für das Anzeigen und Auswählen vom Optionen.Bash While True ist eine Bash-While-Schleife, bei der die Bedingung immer wahr ist und die Schleife unendlich oft ausgeführt wird. 
+# Eine Case-Anweisung ist eine bedingte Kontrollstruktur, die eine Auswahl zwischen mehreren Gruppen von Programmanweisungen ermöglicht. 
 while true; do
     options=("Checking your OS" "install for ubuntu 22.04 and above" "install for other debain based OS" "install a self signed ssl" "recovery, undo system change" )
 
@@ -298,11 +312,11 @@ while true; do
             2) installation_22.04; break ;;
             3) installation_other; break ;;
             4) installation_ssl; break ;;
-			5) recovery; break ;;
+	    5) recovery; break ;;
             *) echo "i cant understand your entrie, choose 1 or 2..etc" >&2
         esac
     done
-
+#Auch hier habe ich eine zweite Case-Anweisung zum Abbrechen und einen Schritt zurück zur Haupt-Case-Anweisung.
     echo "Have you completed your task?"
     select opt in "break the installation" "Yes, go back to installation"; do
         case $REPLY in
