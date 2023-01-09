@@ -76,7 +76,7 @@ if ! which apache2 > /dev/null; then
 sudo apt install apache2 -y |& tee ~/OwnCloud-Installation-Logs/apache-logs.txt
 fi
 reset
-echo " installed successfully ";
+echo " Apache Server installed successfully ";
 # um eine Warte Meldung anzuzeigen. Der Cursor dreht 6 Mal und die Geschwindigkeit ist 0,1 Sekunde. Quelle: https://gist.github.com/loa/e5824fc2b14979b5ce38
 #Eine Bash for-Schleife ist eine Anweisung, mit der Code wiederholt ausgeführt werden kann
 rotateCursor() {
@@ -244,8 +244,188 @@ printf  "${BIGreen} * thanks for using this script "
 }
 #Das ist gemäss Anforderungsdefinition optional und ist für Debian gemeint.
 installation_other () {
-    echo "install"
-apt update
+
+   echo "Die Installation für Debian ist begonnen..."
+#backup apache2 Folder, falls es vorhanden ist. Damit wir später es wiederherstellen können. Quelle: https://linuxconfig.org/bash-scripting-check-if-directory-exists
+DIR="/etc/apache2/"
+if [ -d "$DIR" ]; then
+  # Take action if $DIR exists. #
+  echo "Apache exist, i will backup your config ${DIR}..."
+  cp -r /etc/apache2 /etc/apache2.back
+fi
+#apt-get update  # To get the latest package lists
+#test if apache2 installed. Wenn Apache nicht installiert ist, wird eine Meldung angeziegt und Apache WebServer wird installiert.
+#Quelle: stackoverflow.com/questions/592620/how-can-i-check-if-a-program-exists-from-a-bash-script
+if ! which apache2 > /dev/null; then
+   echo -e "you have not installed apache2 Server yet, i will install it for you.."
+sudo apt install apache2 -y |& tee ~/OwnCloud-Installation-Logs/apache-logs.txt
+fi
+reset
+echo " Apache Server installed successfully ";
+# um eine Warte Meldung anzuzeigen. Der Cursor dreht 6 Mal und die Geschwindigkeit ist 0,1 Sekunde. Quelle: https://gist.github.com/loa/e5824fc2b14979b5ce38
+#Eine Bash for-Schleife ist eine Anweisung, mit der Code wiederholt ausgeführt werden kann
+rotateCursor() {
+s="-,\\,|,/"
+    for i in `seq 1 $1`; do
+        for i in ${s//,/ }; do
+            echo -n $i
+            sleep 0.1
+            echo -ne '\b'
+        done
+    done
+}
+
+rotateCursor
+rotateCursor 6
+
+#backup mysql Folder, falls es vorhanden ist. Quelle: https://linuxconfig.org/bash-scripting-check-if-directory-exists
+DIR="/etc/mysql/"
+if [ -d "$DIR" ]; then
+  # Take action if $DIR exists. #
+  echo "mysql exist, i will backup your config ${DIR}..."
+  cp -r /etc/mysql /etc/mysql.back
+fi
+#test if mariaDB installed, wenn nicht wird eine Meldung angezeigt und installiert. Quelle : stackoverflow.com/questions/592620/how-can-i-check-if-a-program-exists-from-a-bash-script
+
+if ! which mariadb-server > /dev/null; then
+   echo -e "you dont have installed mariadb Server yet, i will install it for you.."
+#MariaDB Mysql installieren und die Logs speichern
+sudo apt install mariadb-server -y |& tee ~/OwnCloud-Installation-Logs/mariabdserver-logs.txt
+#MariaDB Client installieren.
+sudo apt install mysql-client-core-8.0 -y |& tee ~/OwnCloud-Installation-Logs/mariadb-client.txt
+#Manchmal funktioniert der erste Befehl nicht und das Wort apt-get eingefügt werden muss.
+sudo apt-get install mysql-server -y
+#um alle Module von MariaDB zu installieren. Wir brauchen nicht alle
+sudo apt install mariadb* -y |& tee ~/OwnCloud-Installation-Logs/mariadb-extensions.txt
+fi
+reset
+echo " MARIADB installed successfully .... ";
+# um eine Warte Meldung anzuzeigen. Der Cursor dreht 6 Mal und die Geschwindigkeit ist 0,1 Sekunde. Quelle: Quelle: https://gist.github.com/loa/e5824fc2b14979b5ce38
+#Eine Bash for-Schleife ist eine Anweisung, mit der Code wiederholt ausgeführt werden kann
+rotateCursor() {
+s="-,\\,|,/"
+    for i in `seq 1 $1`; do
+        for i in ${s//,/ }; do
+            echo -n $i
+            sleep 0.1
+            echo -ne '\b'
+        done
+    done
+}
+
+rotateCursor
+rotateCursor 6
+
+#Das Ondřej Surý PPA (Personal Package Archive) ist ein gängiger Weg, um bestimmte Versionen der PHP-Laufzeitumgebung unter Ubuntu mit dem APT-Paketmanager zu installieren. Dies ist eine inoffizielle Quelle und wird nicht von PHP.net gepflegt.
+#backup php Ornder, falls es schon vorhanden ist. Falls nicht, macht der Script weiter. Quelle: https://linuxconfig.org/bash-scripting-check-if-directory-exists
+DIR="/etc/php/"
+if [ -d "$DIR" ]; then
+  # Take action if $DIR exists. #
+  echo "php exist, i will backup your config ${DIR}..."
+  cp -r /etc/php /etc/php.back
+fi
+#check if php is installe, if not = install it. Quelle: stackoverflow.com/questions/592620/how-can-i-check-if-a-program-exists-from-a-bash-script
+
+if ! which php > /dev/null; then
+   echo -e "you dont have installed php yet, i will install it for you.."
+#hier sucht das Script ob Php Repo im Cache vorhanden ist. Der Befehk kann gelöscht werden, weil es nutzlos ist.
+apt-cache search php7.4
+#backup apt folder. Damit wir die Datei Source.list später wiederherstellen, mussen wir am besten den Ordner backupen. 
+DIR="/etc/apt/"
+if [ -d "$DIR" ]; then
+  # Take action if $DIR exists. #
+  echo "apt exist, i will backup your config ${DIR}..."
+  cp -r /etc/apt /etc/apt.back
+fi
+#mit diesem Befehel werde ich einen benutzerdefinierten Repo eintragen, damit alte Versionen vom Php installiert werden können.
+#Quelle: https://www.linuxcapable.com/how-to-install-php-7-4-on-ubuntu-22-04-lts/
+add-apt-repository ppa:ondrej/php --yes &> /dev/null |& tee ~/OwnCloud-Installation-Logs/php-repo-logs.txt
+#mit dieser Befehl wird PHP 7.4 und die Module fürs Betreiben von Apache2 Server installiert. Die Logs werde immer bei wichtigen Befehlen gespeichert.
+apt install php7.4 libapache2-mod-php7.4 php7.4-{mysql,intl,curl,json,gd,xml,mbstring,zip} -y |& tee ~/OwnCloud-Installation-Logs/php-installation-logs.txt
+#wir brauchen Curl und gnupg Tools für das Herunterladen vom Packages.
+apt install curl gnupg2 -y |& tee ~/OwnCloud-Installation-Logs/curl-logs.txt
+fi
+reset
+echo " PHP7.4 installed successfully .... ";
+# um eine Warte Meldung anzuzeigen. Der Cursor dreht 6 Mal und die Geschwindigkeit ist 0,1 Sekunde. Quelle: https://gist.github.com/loa/e5824fc2b14979b5ce38
+#Eine Bash for-Schleife ist eine Anweisung, mit der Code wiederholt ausgeführt werden kann
+rotateCursor() {
+s="-,\\,|,/"
+    for i in `seq 1 $1`; do
+        for i in ${s//,/ }; do
+            echo -n $i
+            sleep 0.1
+            echo -ne '\b'
+        done
+    done
+}
+
+rotateCursor
+rotateCursor 6
+
+#Owncloud installation startet hier. Zuerst muss ich Mega Cloud Tools installieren, damit wir das Script herunterladen können.
+#Quelle: https://www.linuxtuto.com/how-to-install-owncloud-on-ubuntu-22-04/
+sudo apt install megatools |& tee ~/OwnCloud-Installation-Logs/megatools.txt
+#backup link: https://download.owncloud.com/server/stable/owncloud-complete-latest.tar.bz2
+#mit diesem Befehle lade ich das OwnCloud Server Datei herunter.
+megadl https://mega.nz/file/BDcCEb5A#l71_cTp345YMTT5aY4Hciz4CN4pCHloLeoJwIBbNFuA |& tee ~/OwnCloud-Installation-Logs/downlaodfrom-mega-logs.txt
+#mit Tar Tool werde ich den Ornder entpacken.
+tar -xjf owncloud.tar.bz2 |& tee ~/OwnCloud-Installation-Logs/tarexport-logs.txt
+#der Ordner muss zum Web Server Ordner kopiert werden.
+cp -r owncloud /var/www/ |& tee ~/OwnCloud-Installation-Logs/copy owncloadfolder-logs.txt
+#jetzt muss ich Apache konfigurieren und informieren, dass es eine neue Website eingefügt wurde.
+cat > /etc/apache2/sites-available/owncloud.conf << 'EOL'
+Alias / "/var/www/owncloud/"
+<Directory /var/www/owncloud/>
+  Options +FollowSymlinks
+  AllowOverride All
+ <IfModule mod_dav.c>
+  Dav off
+ </IfModule>
+ SetEnv HOME /var/www/owncloud
+ SetEnv HTTP_HOME /var/www/owncloud
+</Directory>
+EOL
+#mit diesem Befehl a2ensite aktiviere ich die neue Konfig Datei . Die Logs werden gespeichert.
+a2ensite owncloud.conf |& tee ~/OwnCloud-Installation-Logs/owncloudserver-enable-logs.txt
+#ich muss jetzt Apache informieren, dass der HauptWebsite localhost ist OwbCloud und nicht was im slash html ist. Ich meine das Default Index html Datei.
+a2dissite 000-default.conf |& tee ~/OwnCloud-Installation-Logs/disable-default-config-apache2.txt
+#damit PHP mit Apache korrekt funktioneiren kann und die Requests behandet werden könenn, mussen wir dies Modul aktivieren: unique_id 
+a2enmod rewrite mime unique_id |& tee ~/OwnCloud-Installation-Logs/edit-rewrite-apache-config.txt
+#apachectl ist das Controlr Panel vom Apache Server. Mit diesem Befehl macht ich der Server aufmerksam, dass es etwas gändert wurde.
+apachectl -t |& tee ~/OwnCloud-Installation-Logs/apache2-test-logs.txt
+#Mit diesem Befehl staret ich Apache Server neu
+systemctl restart apache2 |& tee ~/OwnCloud-Installation-Logs/start-apache-logs.txt
+#Jetzt müssen wir eine DB für Owncloud konfigurieren.
+mysql --password=1234-XYZ --user=root --host=localhost << eof
+create database ownclouddb;
+grant all privileges on ownclouddb.* to root@localhost identified by "1234-XYZ";
+flush privileges;
+eof
+#Ich muss einen Ordner für Data erstellen, sonst bekommt man manchmal Fehlermeldungen.
+mkdir /var/www/owncloud/data
+#Ich muss der Ownder und die Gruppe vom OwnCloud Ornder ändern. Normalerweise ist es user;user oder root;root
+sudo chown -R www-data:www-data /var/www/owncloud/ |& tee ~/OwnCloud-Installation-Logs/apache-server-berechtigung.txt
+#jetzt starte ich die Installation von diesem Server und gebe ich Informaitionen und Zugang Daten ein
+cd /var/www/owncloud
+sudo -u www-data php occ maintenance:install \
+   --database "mysql" \
+   --database-name "ownclouddb" \
+   --database-user "root"\
+   --database-pass "1234-XYZ" \
+   --admin-user "root" \
+   --admin-pass "1234-XYZ"
+#Grüne Meldung anzeigen, dass es installiert wurde.
+reset
+BIGreen='\033[1;92m'
+printf  "${BIGreen} * OWNCLOUD WAS INSTALLED SUCCESSFULLY "
+printf  "${BIGreen} * To sign in, visit http://localhost"
+printf  "${BIGreen} * The PW:1234-XYZ"
+printf  "${BIGreen} * and the User : root "
+printf  "${BIGreen} * For security reasons please change your PW and disable the root user "
+printf  "${BIGreen} * it is also recommended to install a SSL "
+printf  "${BIGreen} * thanks for using this script "
+
 }
 #hier startet die Installation von einem Self Signed Zertifikate SSL. 
 #Quelle: https://www.digitalocean.com/community/tutorials/how-to-create-a-self-signed-ssl-certificate-for-apache-in-ubuntu-16-04
