@@ -3,7 +3,10 @@ This is about installing OwnCloud Server on Debian Linux Distrubitons "Ubuntu 22
 This is a school assignment and I was guided by my teacher.
 This is a learning task and if there are any errors in the installation, please send me a comment.
 This script has the following options:
+
 ![grafik](https://user-images.githubusercontent.com/102586033/211348633-0353281a-c51f-4180-8036-420575519a06.png)
+
+
 You should select an option and then print enter and everything will be installed and configured automatically.
 
 #To Download this script:
