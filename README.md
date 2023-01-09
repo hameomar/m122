@@ -42,3 +42,4 @@ chmod 777 script.sh
 ![grafik](https://user-images.githubusercontent.com/102586033/211360106-f735f74c-0b2c-488f-84c1-d3fa80bda286.png)
 
 
+thanks
