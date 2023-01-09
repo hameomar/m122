@@ -5,7 +5,7 @@ echo ' Privacy: This bash script installs OwnCloud Server and the necessary soft
        case $yn in
             Yes) break;;
             No) exit;;
-			*) echo "I cant understand, it's a simple question...enter 1 or 2 and so on" >&2
+	     *) echo "I cant understand, it's a simple question...enter 1 or 2 and so on" >&2
        esac
         done
 
@@ -23,12 +23,7 @@ echo "                                                          ";
 }
 
 showMe
-echo " TBZ OMAR"
 echo "Thanks for using this script....."
-sleep 2s
-reset
-sleep 1s
-echo "TBZ OMAR"
 sleep 2s
 reset
 
@@ -150,7 +145,7 @@ apt install php7.4 libapache2-mod-php7.4 php7.4-{mysql,intl,curl,json,gd,xml,mbs
 apt install curl gnupg2 -y |& tee ~/OwnCloud-Installation-Logs/curl-logs.txt
 fi
 reset
-echo " installed successfully PHP7.4.... ";
+echo " PHP7.4 installed successfully .... ";
 
 rotateCursor() {
 s="-,\\,|,/"
@@ -206,14 +201,16 @@ sudo -u www-data php occ maintenance:install \
    --database-pass "1234-XYZ" \
    --admin-user "root" \
    --admin-pass "1234-XYZ"
-#LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
+#Grüne Meldung anzeigen
 reset
 BIGreen='\033[1;92m'
-printf  "${BIGreen} * OWNCLOUD WURDE ERFOLGREICH INSTALLIERT "
-printf  "${BIGreen} * Um sich anzumelden, besuchen Sie http://localhost"
-printf  "${BIGreen} * Das PW:1234-XYZ"
-printf  "${BIGreen} * und der User : root "
-printf  "${BIGreen} * Für Sicherheitsgrunden ändern Sie bitte Ihr PW und deaktivieren Sie den Benutzer root "
+printf  "${BIGreen} * OWNCLOUD WAS INSTALLED SUCCESSFULLY "
+printf  "${BIGreen} * To sign in, visit http://localhost"
+printf  "${BIGreen} * The PW:1234-XYZ"
+printf  "${BIGreen} * and the User : root "
+printf  "${BIGreen} * For security reasons please change your PW and disable the root user "
+printf  "${BIGreen} * it is also recommended to install a SSL "
+printf  "${BIGreen} * thanks for using this script "
 
 }
 
@@ -223,7 +220,7 @@ apt update
 }
 
 installation_ssl () {
-    echo "installation started"
+    echo "SSL installation started"
 #backup ssl folder
 DIR="/etc/sll/"
 if [ -d "$DIR" ]; then
