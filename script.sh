@@ -1,9 +1,11 @@
 #!/bin/bash
-echo ' Privacy: This bash script will install on your server OwnCloud server and necessary software as well as MariaDB and Apache2. The Apache web server configuration will be adjusted. Remember, if you have important data on the server, please make a backup first. Do you accept this? '
+mkdir ~/OwnCloud-Installation-Logs/
+echo ' Privacy: This bash script installs OwnCloud Server and the necessary software on your server, as well as MariaDB and Apache2, PHP7. The Apache web server configuration will be adjusted. Remember, if you have important data on the server, you can make a backup first. otherwise I will create a backup for your configuration and you can restore it anytime. Do you accept this? '
     select yn in "Yes" "No" ;do
        case $yn in
             Yes) break;;
             No) exit;;
+			*) echo "I cant understand, it's a simple question...enter 1 or 2 and so on" >&2
        esac
         done
 
@@ -53,24 +55,124 @@ rotateCursor 10
 check_os () {
     echo "Checking your OS"
 echo ===================
-lsb_release -a
+lsb_release -a |& tee ~/OwnCloud-Installation-Logs/checkos-logs.txt
 }
 
 installation_22.04 () {
     echo "Die Installation ist begonnen..."
-#LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
+#backup apache2
+DIR="/etc/apache2/"
+if [ -d "$DIR" ]; then
+  # Take action if $DIR exists. #
+  echo "Apache exist, i will backup your config ${DIR}..."
+  cp -r /etc/apache2 /etc/apache2.back
+fi
+#apt-get update  # To get the latest package lists
+#test if apache2 installed
 
-apt-get update  # To get the latest package lists
-apt install apache2 mariadb-server -y
+if ! which apache2 > /dev/null; then
+   echo -e "you have not installed apache2 Server yet, i will install it for you.."
+sudo apt install apache2 -y |& tee ~/OwnCloud-Installation-Logs/apache-logs.txt
+fi
+reset
+echo " installed successfully ";
+
+rotateCursor() {
+s="-,\\,|,/"
+    for i in `seq 1 $1`; do
+        for i in ${s//,/ }; do
+            echo -n $i
+            sleep 0.1
+            echo -ne '\b'
+        done
+    done
+}
+
+rotateCursor
+rotateCursor 6
+
+#backup mysql
+DIR="/etc/mysql/"
+if [ -d "$DIR" ]; then
+  # Take action if $DIR exists. #
+  echo "mysql exist, i will backup your config ${DIR}..."
+  cp -r /etc/mysql /etc/mysql.back
+fi
+#test if mariaDB installed
+
+if ! which mariadb-server > /dev/null; then
+   echo -e "you dont have installed mariadb Server yet, i will install it for you.."
+sudo apt install mariadb-server -y |& tee ~/OwnCloud-Installation-Logs/mariabdserver-logs.txt
+sudo apt install mysql-client-core-8.0 -y |& tee ~/OwnCloud-Installation-Logs/mariadb-client.txt
+sudo apt-get install mysql-server -y
+sudo apt install mariadb* -y |& tee ~/OwnCloud-Installation-Logs/mariadb-extensions.txt
+fi
+reset
+echo " MARIADB installed successfully .... ";
+
+rotateCursor() {
+s="-,\\,|,/"
+    for i in `seq 1 $1`; do
+        for i in ${s//,/ }; do
+            echo -n $i
+            sleep 0.1
+            echo -ne '\b'
+        done
+    done
+}
+
+rotateCursor
+rotateCursor 6
+
+#Das Ondřej Surý PPA (Personal Package Archive) ist ein gängiger Weg, um bestimmte Versionen der PHP-Laufzeitumgebung unter Ubuntu mit dem APT-Paketmanager zu installieren. Dies ist eine inoffizielle Quelle und wird nicht von PHP.net gepflegt.
+#backup php
+DIR="/etc/php/"
+if [ -d "$DIR" ]; then
+  # Take action if $DIR exists. #
+  echo "php exist, i will backup your config ${DIR}..."
+  cp -r /etc/php /etc/php.back
+fi
+#check if php is installe, if not = install it
+
+if ! which php > /dev/null; then
+   echo -e "you dont have installed php yet, i will install it for you.."
+
 apt-cache search php7.4
-add-apt-repository ppa:ondrej/php --yes &> /dev/null
-apt install php7.4 libapache2-mod-php7.4 php7.4-{mysql,intl,curl,json,gd,xml,mbstring,zip} -y
-apt install curl gnupg2 -y
-echo 'deb http://download.opensuse.org/repositories/isv:/ownCloud:/server:/10.9.1/Ubuntu_22.04/ /' > /etc/apt/sources.list.d/isv:ownCloud:server:10.list
-curl -fsSL https://download.opensuse.org/repositories/isv:ownCloud:server:10/Ubuntu_20.04/Release.key | gpg --dearmor > /etc/apt/trusted.gpg.d/isv_ownCloud_server_10.gpg
-apt update
-apt install owncloud-complete-files -y
-mkdir /var/www/owncloud
+#backup apt folder
+DIR="/etc/apt/"
+if [ -d "$DIR" ]; then
+  # Take action if $DIR exists. #
+  echo "apt exist, i will backup your config ${DIR}..."
+  cp -r /etc/apt /etc/apt.back
+fi
+add-apt-repository ppa:ondrej/php --yes &> /dev/null |& tee ~/OwnCloud-Installation-Logs/php-repo-logs.txt
+apt install php7.4 libapache2-mod-php7.4 php7.4-{mysql,intl,curl,json,gd,xml,mbstring,zip} -y |& tee ~/OwnCloud-Installation-Logs/php-installation-logs.txt
+apt install curl gnupg2 -y |& tee ~/OwnCloud-Installation-Logs/curl-logs.txt
+fi
+reset
+echo " installed successfully PHP7.4.... ";
+
+rotateCursor() {
+s="-,\\,|,/"
+    for i in `seq 1 $1`; do
+        for i in ${s//,/ }; do
+            echo -n $i
+            sleep 0.1
+            echo -ne '\b'
+        done
+    done
+}
+
+rotateCursor
+rotateCursor 6
+
+#Owncloud installation
+
+sudo apt install megatools |& tee ~/OwnCloud-Installation-Logs/megatools.txt
+#backup link: https://download.owncloud.com/server/stable/owncloud-complete-latest.tar.bz2
+megadl https://mega.nz/file/BDcCEb5A#l71_cTp345YMTT5aY4Hciz4CN4pCHloLeoJwIBbNFuA |& tee ~/OwnCloud-Installation-Logs/downlaodfrom-mega-logs.txt
+tar -xjf owncloud.tar.bz2 |& tee ~/OwnCloud-Installation-Logs/tarexport-logs.txt
+cp -r owncloud /var/www/ |& tee ~/OwnCloud-Installation-Logs/copy owncloadfolder-logs.txt
 cat > /etc/apache2/sites-available/owncloud.conf << 'EOL'
 Alias / "/var/www/owncloud/"
 <Directory /var/www/owncloud/>
@@ -84,17 +186,18 @@ Alias / "/var/www/owncloud/"
 </Directory>
 EOL
 
-a2ensite owncloud.conf
-a2dissite 000-default.conf
-a2enmod rewrite mime unique_id
-apachectl -t
-systemctl restart apache2
+a2ensite owncloud.conf |& tee ~/OwnCloud-Installation-Logs/owncloudserver-enable-logs.txt
+a2dissite 000-default.conf |& tee ~/OwnCloud-Installation-Logs/disable-default-config-apache2.txt
+a2enmod rewrite mime unique_id |& tee ~/OwnCloud-Installation-Logs/edit-rewrite-apache-config.txt
+apachectl -t |& tee ~/OwnCloud-Installation-Logs/apache2-test-logs.txt
+systemctl restart apache2 |& tee ~/OwnCloud-Installation-Logs/start-apache-logs.txt
 mysql --password=1234-XYZ --user=root --host=localhost << eof
 create database ownclouddb;
 grant all privileges on ownclouddb.* to root@localhost identified by "1234-XYZ";
 flush privileges;
-exit;
 eof
+mkdir /var/www/owncloud/data
+sudo chown -R www-data:www-data /var/www/owncloud/ |& tee ~/OwnCloud-Installation-Logs/apache-server-berechtigung.txt
 cd /var/www/owncloud
 sudo -u www-data php occ maintenance:install \
    --database "mysql" \
@@ -119,8 +222,60 @@ installation_other () {
 apt update
 }
 
+installation_ssl () {
+    echo "installation started"
+#backup ssl folder
+DIR="/etc/sll/"
+if [ -d "$DIR" ]; then
+  # Take action if $DIR exists. #
+  echo "ssl exist, i will backup your config ${DIR}..."
+  cp -r /etc/ssl /etc/ssl.back
+fi	
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/apache.key -out /etc/ssl/certs/apache.crt |& tee ~/OwnCloud-Installation-Logs/ssl-logs.txt
+cat > /etc/apache2/sites-available/default-ssl.conf << 'EOL'
+<IfModule mod_ssl.c>
+	<VirtualHost _default_:443>
+		ServerAdmin webmaster@localhost
+		ServerName 127.0.0.1
+		DocumentRoot /var/www/html
+
+		SSLEngine on
+		SSLCertificateFile    /etc/ssl/certs/apache.crt
+		SSLCertificateKeyFile /etc/ssl/private/apache.key
+		
+		<FilesMatch "\.(cgi|shtml|phtml|php)$">
+				SSLOptions +StdEnvVars
+		</FilesMatch>
+		<Directory /usr/lib/cgi-bin>
+				SSLOptions +StdEnvVars
+		</Directory>
+
+		
+	</VirtualHost>
+</IfModule>
+EOL
+
+sudo a2enmod ssl |& tee ~/OwnCloud-Installation-Logs/enable-ssl-mode-logs.txt
+sudo a2ensite default-ssl.conf |& tee ~/OwnCloud-Installation-Logs/enable-ssl-site-logs.txt
+sudo systemctl restart apache2 |& tee ~/OwnCloud-Installation-Logs/reload-apache-afterssl-logs.txt
+}
+
+recovery () {
+    echo "recovery proccess is running"
+sudo service apache2 stop ; sudo service mysql stop ; sudo service mariadb stop	
+rm -r /etc/apache2 ; cp -r /etc/apache2.back /etc/apache2
+rm -r /etc/mysql ; cp -r /etc/mysql.back /etc/mysql
+rm -r /etc/php ; cp -r /etc/php.back /etc/php
+rm -r /etc/ssl/ ; cp -r /etc/ssl.back /etc/ssl
+rm -r /var/www/owncloud
+sudo apt purge curl gnupg2 -y
+sudo apt purge megatools -y
+rm -r /etc/apt/ ; cp -r /etc/apt.back /etc/apt ; apt update -y
+
+}
+
 while true; do
-    options=("Checking your OS" "install for ubuntu 22.04 and above" "install for other debain based OS")
+    options=("Checking your OS" "install for ubuntu 22.04 and above" "install for other debain based OS" "install a self signed ssl" "recovery, undo system change" )
 
     echo "Choose an option:"
     select opt in "${options[@]}"; do
@@ -128,18 +283,18 @@ while true; do
             1) check_os; break ;;
             2) installation_22.04; break ;;
             3) installation_other; break ;;
-            *) echo "i cant understand your entrie, choose 1 or 2" >&2
+            4) installation_ssl; break ;;
+			5) recovery; break ;;
+            *) echo "i cant understand your entrie, choose 1 or 2..etc" >&2
         esac
     done
 
-    echo "Doing other things..."
-
-    echo "Have you checked your OS Rlease?"
-    select opt in "No, break the installation" "Yes, go back to installation"; do
+    echo "Have you completed your task?"
+    select opt in "break the installation" "Yes, go back to installation"; do
         case $REPLY in
             1) break 2 ;;
             2) break ;;
-            *) echo "Look, it's a simple question...enter 1 or 2" >&2
+            *) echo "I cant understand, it's a simple question...enter 1 or 2 and so on" >&2
         esac
     done
 done
