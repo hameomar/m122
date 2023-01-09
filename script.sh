@@ -474,23 +474,23 @@ sudo systemctl restart apache2 |& tee ~/OwnCloud-Installation-Logs/reload-apache
 recovery () {
     echo "recovery proccess is running"
 #Zuerst mussen alle Dienste mit der Arbeit aufhören. Mysql und Apache, MariaDB. Für Php kann man nicht
-sudo service apache2 stop ; sudo service mysql stop ; sudo service mariadb stop	
+sudo service apache2 stop ; sudo service mysql stop ; sudo service mariadb stop	|& tee ~/OwnCloud-Installation-Logs/diable-services-logs.txt
 #Ich wiederherstelle Apache Konfig
-rm -r /etc/apache2 ; cp -r /etc/apache2.back /etc/apache2
+rm -r /etc/apache2 ; cp -r /etc/apache2.back /etc/apache2 |& tee ~/OwnCloud-Installation-Logs/recovery-apache.txt
 #Wiederherstellen vom Mysql Konfiguration
-rm -r /etc/mysql ; cp -r /etc/mysql.back /etc/mysql
+rm -r /etc/mysql ; cp -r /etc/mysql.back /etc/mysql |& tee ~/OwnCloud-Installation-Logs/recovery-mysql-logs.txt
 #Wiederherstellen vom Php Konfig
-rm -r /etc/php ; cp -r /etc/php.back /etc/php
+rm -r /etc/php ; cp -r /etc/php.back /etc/php |& tee ~/OwnCloud-Installation-Logs/recovery-php-logs.txt
 #Wiederherstellen vom SSL Konfiguration
-rm -r /etc/ssl/ ; cp -r /etc/ssl.back /etc/ssl
+rm -r /etc/ssl/ ; cp -r /etc/ssl.back /etc/ssl |& tee ~/OwnCloud-Installation-Logs/recovery-ssl-logs.txt
 # Das Löschen vom OwnCloud Seite
-rm -r /var/www/owncloud
+rm -r /var/www/owncloud |& tee ~/OwnCloud-Installation-Logs/remove-owncloud-logs.txt
 # Das Löschen von Curl und DownLoad Tools
 sudo apt purge curl gnupg2 -y
 #Mega Tools löschen
 sudo apt purge megatools -y
 #Am Schluss muss ich das Repo wiederherstellen und updaten
-rm -r /etc/apt/ ; cp -r /etc/apt.back /etc/apt ; apt update -y
+rm -r /etc/apt/ ; cp -r /etc/apt.back /etc/apt ; apt update -y |& tee ~/OwnCloud-Installation-Logs/recovery-apt-logs.txt
 
 }
 # Hier ist meine Haupt Schleif für das Anzeigen und Auswählen vom Optionen.Bash While True ist eine Bash-While-Schleife, bei der die Bedingung immer wahr ist und die Schleife unendlich oft ausgeführt wird. 
