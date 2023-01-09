@@ -35,6 +35,7 @@ reset
 echo "starting....";
 
 # um eine Warte Meldung anzuzeigen. Der Cursor dreht 10 Mal und die Geschwindigkeit ist 0,1 Sekunde. Quelle: https://gist.github.com/loa/e5824fc2b14979b5ce38
+#Eine Bash for-Schleife ist eine Anweisung, mit der Code wiederholt ausgeführt werden kann
 rotateCursor() {
 s="-,\\,|,/"
     for i in `seq 1 $1`; do
@@ -77,6 +78,7 @@ fi
 reset
 echo " installed successfully ";
 # um eine Warte Meldung anzuzeigen. Der Cursor dreht 6 Mal und die Geschwindigkeit ist 0,1 Sekunde. Quelle: https://gist.github.com/loa/e5824fc2b14979b5ce38
+#Eine Bash for-Schleife ist eine Anweisung, mit der Code wiederholt ausgeführt werden kann
 rotateCursor() {
 s="-,\\,|,/"
     for i in `seq 1 $1`; do
@@ -114,6 +116,7 @@ fi
 reset
 echo " MARIADB installed successfully .... ";
 # um eine Warte Meldung anzuzeigen. Der Cursor dreht 6 Mal und die Geschwindigkeit ist 0,1 Sekunde. Quelle: Quelle: https://gist.github.com/loa/e5824fc2b14979b5ce38
+#Eine Bash for-Schleife ist eine Anweisung, mit der Code wiederholt ausgeführt werden kann
 rotateCursor() {
 s="-,\\,|,/"
     for i in `seq 1 $1`; do
@@ -160,7 +163,7 @@ fi
 reset
 echo " PHP7.4 installed successfully .... ";
 # um eine Warte Meldung anzuzeigen. Der Cursor dreht 6 Mal und die Geschwindigkeit ist 0,1 Sekunde. Quelle: https://gist.github.com/loa/e5824fc2b14979b5ce38
-
+#Eine Bash for-Schleife ist eine Anweisung, mit der Code wiederholt ausgeführt werden kann
 rotateCursor() {
 s="-,\\,|,/"
     for i in `seq 1 $1`; do
