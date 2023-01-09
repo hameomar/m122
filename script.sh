@@ -1,15 +1,19 @@
 #!/bin/bash
 # um einen Ordner für die Logs zu erstellen.
 mkdir ~/OwnCloud-Installation-Logs/
+#Datenschutz Meldung und mit einer Case-Anweisung, um eine Option auszuwählen. Wenn eine Option ausgewählt wurde, wird ein Code zurückgegeben, um die nächste Sache zu tun oder den Prozess abzubrechen.
+#Ungültige Abgaben werden abgefnagen. Der User muss immer nur Zahlen eingeben. 1 für Ja und 2 für Nein
+#Quelle https://stackoverflow.com/questions/226703/how-do-i-prompt-for-yes-no-cancel-input-in-a-linux-shell-script 
+#Kommentar vom Myrddin Emrys. answered Oct 22, 2008 at 17:08
 echo ' Privacy: This bash script installs OwnCloud Server and the necessary software on your server, as well as MariaDB and Apache2, PHP7. The Apache web server configuration will be adjusted. Remember, if you have important data on the server, you can make a backup first. otherwise I will create a backup for your configuration and you can restore it anytime. Do you accept this? '
     select yn in "Yes" "No" ;do
        case $yn in
             Yes) break;;
             No) exit;;
-	     *) echo "I cant understand, it's a simple question...enter 1 or 2 and so on" >&2
+	     *) echo "I cant understand, it's a simple question...enter 1 for Yes or 2 for No " >&2
        esac
         done
-
+#Mit diesem Funktion zeige ich einen Text. Man kann es mit Firma Logo ersetzten.Quelle ist mir nicht bakannt. Vom Google bekommen.
 showMe(){
 
 echo " ___________ ______   _____ _____ _____ _____ _____ _     ";
@@ -22,7 +26,7 @@ echo "                                                          ";
 echo "                                                          ";
 
 }
-
+#Text Print mit Warte Zeit von 2 Sekunden. Mit dem Befehl Reset leere ich das Terminal Fenster.
 showMe
 echo "Thanks for using this script....."
 sleep 2s
@@ -30,7 +34,7 @@ reset
 
 echo "starting....";
 
-# um eine Warte Meldung anzuzeigen. Der Cursor dreht 10 Mal und die Geschwindigkeit ist 0,1 Sekunde
+# um eine Warte Meldung anzuzeigen. Der Cursor dreht 10 Mal und die Geschwindigkeit ist 0,1 Sekunde. Quelle: https://gist.github.com/loa/e5824fc2b14979b5ce38
 rotateCursor() {
 s="-,\\,|,/"
     for i in `seq 1 $1`; do
@@ -47,7 +51,7 @@ rotateCursor
 
 # 2 loops
 rotateCursor 10
-#hier geht es darum, das System Version und Release zu prüfen. der Zweite Teil speichert das Output als Log
+#hier geht es darum, das System Version und Release zu prüfen. der Zweite Teil speichert das Output als Log. Keine Quelle, von mir selbst.
 check_os () {
     echo "Checking your OS"
 echo "check started"
@@ -56,7 +60,7 @@ lsb_release -a |& tee ~/OwnCloud-Installation-Logs/checkos-logs.txt
 #hier startet die Installation für Ubuntu 22.04 Distro
 installation_22.04 () {
     echo "Die Installation ist begonnen..."
-#backup apache2 Folder, falls es vorhanden ist. Damit wir später es wiederherstellen können.
+#backup apache2 Folder, falls es vorhanden ist. Damit wir später es wiederherstellen können. Quelle: https://linuxconfig.org/bash-scripting-check-if-directory-exists
 DIR="/etc/apache2/"
 if [ -d "$DIR" ]; then
   # Take action if $DIR exists. #
@@ -65,14 +69,14 @@ if [ -d "$DIR" ]; then
 fi
 #apt-get update  # To get the latest package lists
 #test if apache2 installed. Wenn Apache nicht installiert ist, wird eine Meldung angeziegt und Apache WebServer wird installiert.
-
+#Quelle: stackoverflow.com/questions/592620/how-can-i-check-if-a-program-exists-from-a-bash-script
 if ! which apache2 > /dev/null; then
    echo -e "you have not installed apache2 Server yet, i will install it for you.."
 sudo apt install apache2 -y |& tee ~/OwnCloud-Installation-Logs/apache-logs.txt
 fi
 reset
 echo " installed successfully ";
-# um eine Warte Meldung anzuzeigen. Der Cursor dreht 6 Mal und die Geschwindigkeit ist 0,1 Sekunde
+# um eine Warte Meldung anzuzeigen. Der Cursor dreht 6 Mal und die Geschwindigkeit ist 0,1 Sekunde. Quelle: https://gist.github.com/loa/e5824fc2b14979b5ce38
 rotateCursor() {
 s="-,\\,|,/"
     for i in `seq 1 $1`; do
@@ -87,25 +91,29 @@ s="-,\\,|,/"
 rotateCursor
 rotateCursor 6
 
-#backup mysql Folder, falls es vorhanden ist.
+#backup mysql Folder, falls es vorhanden ist. Quelle: https://linuxconfig.org/bash-scripting-check-if-directory-exists
 DIR="/etc/mysql/"
 if [ -d "$DIR" ]; then
   # Take action if $DIR exists. #
   echo "mysql exist, i will backup your config ${DIR}..."
   cp -r /etc/mysql /etc/mysql.back
 fi
-#test if mariaDB installed, wenn nicht wird eine Meldung angezeigt und installiert.
+#test if mariaDB installed, wenn nicht wird eine Meldung angezeigt und installiert. Quelle : stackoverflow.com/questions/592620/how-can-i-check-if-a-program-exists-from-a-bash-script
 
 if ! which mariadb-server > /dev/null; then
    echo -e "you dont have installed mariadb Server yet, i will install it for you.."
+#MariaDB Mysql installieren und die Logs speichern
 sudo apt install mariadb-server -y |& tee ~/OwnCloud-Installation-Logs/mariabdserver-logs.txt
+#MariaDB Client installieren.
 sudo apt install mysql-client-core-8.0 -y |& tee ~/OwnCloud-Installation-Logs/mariadb-client.txt
+#Manchmal funktioniert der erste Befehl nicht und das Wort apt-get eingefügt werden muss.
 sudo apt-get install mysql-server -y
+#um alle Module von MariaDB zu installieren. Wir brauchen nicht alle
 sudo apt install mariadb* -y |& tee ~/OwnCloud-Installation-Logs/mariadb-extensions.txt
 fi
 reset
 echo " MARIADB installed successfully .... ";
-# um eine Warte Meldung anzuzeigen. Der Cursor dreht 6 Mal und die Geschwindigkeit ist 0,1 Sekunde
+# um eine Warte Meldung anzuzeigen. Der Cursor dreht 6 Mal und die Geschwindigkeit ist 0,1 Sekunde. Quelle: Quelle: https://gist.github.com/loa/e5824fc2b14979b5ce38
 rotateCursor() {
 s="-,\\,|,/"
     for i in `seq 1 $1`; do
@@ -121,14 +129,14 @@ rotateCursor
 rotateCursor 6
 
 #Das Ondřej Surý PPA (Personal Package Archive) ist ein gängiger Weg, um bestimmte Versionen der PHP-Laufzeitumgebung unter Ubuntu mit dem APT-Paketmanager zu installieren. Dies ist eine inoffizielle Quelle und wird nicht von PHP.net gepflegt.
-#backup php Ornder, falls es schon vorhanden ist. Falls nicht, macht der Script weiter
+#backup php Ornder, falls es schon vorhanden ist. Falls nicht, macht der Script weiter. Quelle: https://linuxconfig.org/bash-scripting-check-if-directory-exists
 DIR="/etc/php/"
 if [ -d "$DIR" ]; then
   # Take action if $DIR exists. #
   echo "php exist, i will backup your config ${DIR}..."
   cp -r /etc/php /etc/php.back
 fi
-#check if php is installe, if not = install it
+#check if php is installe, if not = install it. Quelle: stackoverflow.com/questions/592620/how-can-i-check-if-a-program-exists-from-a-bash-script
 
 if ! which php > /dev/null; then
    echo -e "you dont have installed php yet, i will install it for you.."
@@ -142,6 +150,7 @@ if [ -d "$DIR" ]; then
   cp -r /etc/apt /etc/apt.back
 fi
 #mit diesem Befehel werde ich einen benutzerdefinierten Repo eintragen, damit alte Versionen vom Php installiert werden können.
+#Quelle: https://www.linuxcapable.com/how-to-install-php-7-4-on-ubuntu-22-04-lts/
 add-apt-repository ppa:ondrej/php --yes &> /dev/null |& tee ~/OwnCloud-Installation-Logs/php-repo-logs.txt
 #mit dieser Befehl wird PHP 7.4 und die Module fürs Betreiben von Apache2 Server installiert. Die Logs werde immer bei wichtigen Befehlen gespeichert.
 apt install php7.4 libapache2-mod-php7.4 php7.4-{mysql,intl,curl,json,gd,xml,mbstring,zip} -y |& tee ~/OwnCloud-Installation-Logs/php-installation-logs.txt
@@ -150,7 +159,7 @@ apt install curl gnupg2 -y |& tee ~/OwnCloud-Installation-Logs/curl-logs.txt
 fi
 reset
 echo " PHP7.4 installed successfully .... ";
-# um eine Warte Meldung anzuzeigen. Der Cursor dreht 6 Mal und die Geschwindigkeit ist 0,1 Sekunde
+# um eine Warte Meldung anzuzeigen. Der Cursor dreht 6 Mal und die Geschwindigkeit ist 0,1 Sekunde. Quelle: https://gist.github.com/loa/e5824fc2b14979b5ce38
 
 rotateCursor() {
 s="-,\\,|,/"
@@ -167,7 +176,7 @@ rotateCursor
 rotateCursor 6
 
 #Owncloud installation startet hier. Zuerst muss ich Mega Cloud Tools installieren, damit wir das Script herunterladen können.
-
+#Quelle: https://www.linuxtuto.com/how-to-install-owncloud-on-ubuntu-22-04/
 sudo apt install megatools |& tee ~/OwnCloud-Installation-Logs/megatools.txt
 #backup link: https://download.owncloud.com/server/stable/owncloud-complete-latest.tar.bz2
 #mit diesem Befehle lade ich das OwnCloud Server Datei herunter.
@@ -236,6 +245,7 @@ installation_other () {
 apt update
 }
 #hier startet die Installation von einem Self Signed Zertifikate SSL. 
+#Quelle: https://www.digitalocean.com/community/tutorials/how-to-create-a-self-signed-ssl-certificate-for-apache-in-ubuntu-16-04
 installation_ssl () {
     echo "SSL installation started"
 #backup ssl Ordner, damit wir es später wiederherstellen können.
@@ -302,6 +312,7 @@ rm -r /etc/apt/ ; cp -r /etc/apt.back /etc/apt ; apt update -y
 }
 # Hier ist meine Haupt Schleif für das Anzeigen und Auswählen vom Optionen.Bash While True ist eine Bash-While-Schleife, bei der die Bedingung immer wahr ist und die Schleife unendlich oft ausgeführt wird. 
 # Eine Case-Anweisung ist eine bedingte Kontrollstruktur, die eine Auswahl zwischen mehreren Gruppen von Programmanweisungen ermöglicht. 
+#Quelle: https://stackoverflow.com/questions/47399306/case-statement-in-a-while-loop-shell-scripting der erste Kommentar
 while true; do
     options=("Checking your OS" "install for ubuntu 22.04 and above" "install for other debain based OS" "install a self signed ssl" "recovery, undo system change" )
 
@@ -317,6 +328,7 @@ while true; do
         esac
     done
 #Auch hier habe ich eine zweite Case-Anweisung zum Abbrechen und einen Schritt zurück zur Haupt-Case-Anweisung.
+#Quelle: https://linuxize.com/post/bash-case-statement/
     echo "Have you completed your task?"
     select opt in "break the installation" "Yes, go back to installation"; do
         case $REPLY in
