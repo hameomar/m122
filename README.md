@@ -11,10 +11,15 @@ You should select an option and then print enter and everything will be installe
 
 #To Download this script:
 open Terminal and give this command:
+
 sudo wget https://raw.githubusercontent.com/hameomar/m122/main/script.sh
+
 chmod +x script.sh
+
 chmod 777 script.sh
+
 sudo su 
+
 ./script.sh
 
 #All Logs will be availably here:
