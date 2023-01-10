@@ -5,6 +5,7 @@ mkdir ~/OwnCloud-Installation-Logs/
 #Ungültige Abgaben werden abgefnagen. Der User muss immer nur Zahlen eingeben. 1 für Ja und 2 für Nein
 #Quelle https://stackoverflow.com/questions/226703/how-do-i-prompt-for-yes-no-cancel-input-in-a-linux-shell-script 
 #Kommentar vom Myrddin Emrys. answered Oct 22, 2008 at 17:08
+#mit dem break Befehl beende ich die Case Anweisung und springe zum nächsten Zielencode.
 echo ' Privacy: This bash script installs OwnCloud Server and the necessary software on your server, as well as MariaDB and Apache2, PHP7. The Apache web server configuration will be adjusted. Remember, if you have important data on the server, you can make a backup first. otherwise I will create a backup for your configuration and you can restore it anytime. Do you accept this? '
     select yn in "Yes" "No" ;do
        case $yn in
@@ -36,6 +37,9 @@ echo "starting....";
 
 # um eine Warte Meldung anzuzeigen. Der Cursor dreht 10 Mal und die Geschwindigkeit ist 0,1 Sekunde. Quelle: https://gist.github.com/loa/e5824fc2b14979b5ce38
 #Eine Bash for-Schleife ist eine Anweisung, mit der Code wiederholt ausgeführt werden kann
+#wir können die Zahlen oder Zeichenfolge in der Bash mit dem Befehl seq iterieren. der Befehl seq gibt eine Folgen aus
+#mit echo -ne '\b' , stellen man ein, dass nur Curosr Status angezeigt werden soll und nicht so: -,\\,|,/. 
+#echo -n = no new line
 rotateCursor() {
 s="-,\\,|,/"
     for i in `seq 1 $1`; do
@@ -47,10 +51,10 @@ s="-,\\,|,/"
     done
 }
 
-# Single loop
+# Single loop, kann man ohne Zahl eingeben
 rotateCursor
 
-# 2 loops
+# mehrere loops
 rotateCursor 10
 #hier geht es darum, das System Version und Release zu prüfen. der Zweite Teil speichert das Output als Log. Keine Quelle, von mir selbst.
 check_os () {
@@ -62,6 +66,7 @@ lsb_release -a |& tee ~/OwnCloud-Installation-Logs/checkos-logs.txt
 installation_22.04 () {
     echo "Die Installation ist begonnen..."
 #backup apache2 Folder, falls es vorhanden ist. Damit wir später es wiederherstellen können. Quelle: https://linuxconfig.org/bash-scripting-check-if-directory-exists
+# mit der Option -d zeige ich nur den Ordner zum lesen. ls -d /etc/ gibt nur /etc als output
 DIR="/etc/apache2/"
 if [ -d "$DIR" ]; then
   # Take action if $DIR exists. #
