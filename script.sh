@@ -517,6 +517,7 @@ while true; do
     done
 #Auch hier habe ich eine zweite Case-Anweisung zum Abbrechen und einen Schritt zurück zur Haupt-Case-Anweisung.
 #Quelle: https://linuxize.com/post/bash-case-statement/
+#bezüglich >&2 https://stackoverflow.com/questions/23489934/echo-2-some-text-what-does-it-mean-in-shell-scripting
     echo "Have you completed your task?"
     select opt in "break the installation" "Yes, go back to installation"; do
         case $REPLY in
