@@ -6,6 +6,7 @@ mkdir ~/OwnCloud-Installation-Logs/
 #Quelle https://stackoverflow.com/questions/226703/how-do-i-prompt-for-yes-no-cancel-input-in-a-linux-shell-script 
 #Kommentar vom Myrddin Emrys. answered Oct 22, 2008 at 17:08
 #mit dem break Befehl beende ich die Case Anweisung und springe zum nächsten Zielencode.
+#Die Verwendung von >&2 hier sendet die Ausgabe an Standardfehler statt an Standardausgang : https://stackoverflow.com/questions/23489934/echo-2-some-text-what-does-it-mean-in-shell-scripting
 echo ' Privacy: This bash script installs OwnCloud Server and the necessary software on your server, as well as MariaDB and Apache2, PHP7. The Apache web server configuration will be adjusted. Remember, if you have important data on the server, you can make a backup first. otherwise I will create a backup for your configuration and you can restore it anytime. Do you accept this? '
     select yn in "Yes" "No" ;do
        case $yn in
