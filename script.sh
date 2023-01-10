@@ -8,6 +8,7 @@ mkdir ~/OwnCloud-Installation-Logs/
 #mit dem break Befehl beende ich die Case Anweisung und springe zum nächsten Zielencode.
 #Die Verwendung von >&2 hier sendet die Ausgabe an Standardfehler statt an Standardausgang : https://stackoverflow.com/questions/23489934/echo-2-some-text-what-does-it-mean-in-shell-scripting
 #oder "und >&2 bedeutet, dass die Ausgabe an STDERR gesendet wird, so dass die Meldung als Fehler auf der Konsole ausgegeben wird." Quelle: Google.ch
+#select ist ein Command und ist kein Statment : https://linuxhint.com/bash_select_command/
 echo ' Privacy: This bash script installs OwnCloud Server and the necessary software on your server, as well as MariaDB and Apache2, PHP7. The Apache web server configuration will be adjusted. Remember, if you have important data on the server, you can make a backup first. otherwise I will create a backup for your configuration and you can restore it anytime. Do you accept this? '
     select yn in "Yes" "No" ;do
        case $yn in
