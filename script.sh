@@ -39,7 +39,7 @@ echo "starting....";
 #Eine Bash for-Schleife ist eine Anweisung, mit der Code wiederholt ausgeführt werden kann
 #wir können die Zahlen oder Zeichenfolge in der Bash mit dem Befehl seq iterieren. der Befehl seq gibt eine Folgen aus
 #mit echo -ne '\b' , stellen man ein, dass nur Curosr Status angezeigt werden soll und nicht so: -,\\,|,/. 
-#echo -n = no new line
+#echo -n = no new line. Aber "Der Umriss am Ende wird weggelassen" : https://www.tutorialkart.com/bash-shell-scripting/bash-echo/
 # echo -e ="Aktivierung der Interpretation von Backslash-Escaped-Zeichen"
 rotateCursor() {
 s="-,\\,|,/"
