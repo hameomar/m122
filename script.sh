@@ -79,6 +79,7 @@ fi
 #apt-get update  # To get the latest package lists
 #test if apache2 installed. Wenn Apache nicht installiert ist, wird eine Meldung angeziegt und Apache WebServer wird installiert.
 #Quelle: stackoverflow.com/questions/592620/how-can-i-check-if-a-program-exists-from-a-bash-script
+#/dev/null = nowhere: https://unix.stackexchange.com/questions/34491/dev-null-21-in-if-statement
 if ! which apache2 > /dev/null; then
    echo -e "you have not installed apache2 Server yet, i will install it for you.."
 sudo apt install apache2 -y |& tee ~/OwnCloud-Installation-Logs/apache-logs.txt
