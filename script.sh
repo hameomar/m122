@@ -40,6 +40,7 @@ echo "starting....";
 #wir können die Zahlen oder Zeichenfolge in der Bash mit dem Befehl seq iterieren. der Befehl seq gibt eine Folgen aus
 #mit echo -ne '\b' , stellen man ein, dass nur Curosr Status angezeigt werden soll und nicht so: -,\\,|,/. 
 #echo -n = no new line
+# echo -e ="Aktivierung der Interpretation von Backslash-Escaped-Zeichen"
 rotateCursor() {
 s="-,\\,|,/"
     for i in `seq 1 $1`; do
